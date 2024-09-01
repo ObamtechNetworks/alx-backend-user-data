@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 """Encrypting passwords"""
 import bcrypt
-from typing import ByteString
 
 
-def hash_password(password: str) -> ByteString:
+def hash_password(password: str) -> bytes:
     """Hashes a password
 
     Args:
@@ -13,6 +12,7 @@ def hash_password(password: str) -> ByteString:
     Returns:
         ByteString: Returns a salted hashed password byte string
     """
-    password_to_bytes = password.encode()
-    hash_passwd = bcrypt.hashpw(password_to_bytes, bcrypt.gensalt())
+    password_to_bytes = password.encode('utf-8')
+    salt = bcrypt.gensalt()  # automatically generate salt
+    hash_passwd = bcrypt.hashpw(password_to_bytes, salt)
     return hash_passwd
