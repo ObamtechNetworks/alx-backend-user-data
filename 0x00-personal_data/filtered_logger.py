@@ -4,6 +4,8 @@
 import re
 from typing import List
 import logging
+import os
+import mysql.connector
 
 
 def filter_datum(fields: List[str], redaction: str,
@@ -89,3 +91,28 @@ def get_logger() -> logging.Logger:
     logger.addHandler(stream_handler)
 
     return logger
+
+
+def get_db() -> mysql.connector.connection.MySQLConnection:
+    """Returns a connector to a database
+
+    Returns:
+        mysql.connector.connection.MySQLConnection:
+        The MySQL connection object.
+    """
+    # Retrieve database credentials and other configuration
+    # from environment variables
+    db_username = os.getenv('PERSONAL_DATA_DB_USERNAME', 'root')
+    db_password = os.getenv('PERSONAL_DATA_DB_PASSWORD', '')
+    db_host = os.getenv('PERSONAL_DATA_DB_HOST', 'localhost')
+    db_name = os.getenv('PERSONAL_DATA_DB_NAME')
+
+    # Establish a connection to the MySQL database
+    db_connection = mysql.connector.connect(
+        user=db_username,
+        password=db_password,
+        host=db_host,
+        database=db_name
+    )
+
+    return db_connection
