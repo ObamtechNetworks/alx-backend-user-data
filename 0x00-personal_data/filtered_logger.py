@@ -58,3 +58,34 @@ class RedactingFormatter(logging.Formatter):
         record.msg = filtered_message
         # Use the parent class to format the log record
         return super(RedactingFormatter, self).format(record)
+
+
+PII_FIELDS = ('name', 'email', 'ssn', 'password', 'phone')
+
+
+def get_logger() -> logging.Logger:
+    """Creates a logger object named 'user_data' with specific settings
+
+    Returns:
+        logging.Logger: returns the logger object
+    """
+    # create or get the 'user_data' logger
+    logger = logging.getLogger('user_data')
+
+    # set logging level to INFO
+    logger.setLevel(logging.INFO)
+
+    # prevent propagation of messages to other loggers
+    logger.propagate = False
+
+    # create a StreamHandler to output logs to the console (stdout)
+    stream_handler = logging.StreamHandler()
+
+    # Attach Redacting Formatter to the streamhandler
+    formatter = RedactingFormatter(fields=PII_FIELDS)
+    stream_handler.setFormatter(formatter)
+
+    # add the streamhandler to the logger
+    logger.addHandler(stream_handler)
+
+    return logger
