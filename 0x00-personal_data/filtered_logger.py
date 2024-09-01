@@ -117,3 +117,43 @@ def get_db() -> connection.MySQLConnection:
     )
 
     return db_connection
+
+
+def main():
+    """Program Entry point
+    """
+    # Get a database connection
+    db_connect = get_db()
+
+    # Create or get the logger
+    logger = get_logger()
+
+    try:
+        # Create a cursor object using the connection
+        cursor = db_connect.cursor()
+
+        # Execute the query to fetch all rows from the 'users' table
+        cursor.execute("SELECT * FROM users;")
+
+        # Fetch all rows from the query
+        rows = cursor.fetchall()
+
+        # Iterate over each row
+        for row in rows:
+            # Construct the log message
+            message = (
+                f'name={row[0]}; email={row[1]}; phone={row[2]}; '
+                f'ssn={row[3]}; password={row[4]}; ip={row[5]}; '
+                f'last_login={row[6]}; user_agent={row[7]}'
+            )
+
+            # Log the message
+            logger.info(message)
+
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+
+    finally:
+        # Ensure the cursor and connection are closed
+        cursor.close()
+        db_connect.close()
