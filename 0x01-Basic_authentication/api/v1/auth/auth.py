@@ -18,7 +18,20 @@ class Auth:
         Returns:
             bool: Returns a boolean
         """
-        return False
+        if not path:
+            return True
+        if not excluded_paths:
+            return True
+
+        # Normalize the path
+        normalized_path = path.rstrip('/')
+
+        # Check if the normalized path is in the excluded paths
+        for excluded_path in excluded_paths:
+            if excluded_path.rstrip('/') == normalized_path:
+                return False
+
+        return True
 
     def authorization_header(self, request=None) -> str:
         """Manages authrization header
