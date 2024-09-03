@@ -42,7 +42,12 @@ class Auth:
         Returns:
             str: returns the authorization header as string
         """
-        return None
+        if request is None:
+            return None
+
+        # Check if 'Authorization' header exists in the request headers
+        return request.headers.get('Authorization', None)
+
 
     def current_user(self, request=None) -> TypeVar('User'):
         """returns the current user session
