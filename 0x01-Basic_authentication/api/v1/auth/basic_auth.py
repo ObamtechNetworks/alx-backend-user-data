@@ -73,7 +73,7 @@ class BasicAuth(Auth):
             return None, None
         if ':' not in decoded_base64_authorization_header:
             return None, None
-        email, password = decoded_base64_authorization_header.split(':')
+        email, password = decoded_base64_authorization_header.split(':', 1)
         return email, password
 
     def user_object_from_credentials(self, user_email: str,
@@ -107,5 +107,45 @@ class BasicAuth(Auth):
                     return user
         except Exception as e:
             return None
+
+        return None
+
+    def current_user(self, request=None) -> TypeVar('User'):
+        """Overloads Auth and retrieves the User instace for a request
+        Args:
+            request (Flask request): flask http request
+
+        Returns:
+            The User object as a payload json object
+        """
+        if request is None:
+            return None
+
+        # Step 1: Get the authorization header
+        auth_header = self.authorization_header(request)
+        if not auth_header:
+            return None
+
+        # Step 2: Extract the base64 authorization header
+        base64_auth_header = self.extract_base64_authorization_header(
+            auth_header)
+        if not base64_auth_header:
+            return None
+
+        # Step 3: Decode the base64 authorization header
+        decoded_str = self.decode_base64_authorization_header(
+            base64_auth_header)
+        if not decoded_str:
+            return None
+
+        # Step 4: Extract user credentials
+        user_email, user_pwd = self.extract_user_credentials(decoded_str)
+        if not user_email or not user_pwd:
+            return None
+
+        # Step 5: Get the user object from credentials
+        user = self.user_object_from_credentials(user_email, user_pwd)
+        if user:
+            return user
 
         return None
