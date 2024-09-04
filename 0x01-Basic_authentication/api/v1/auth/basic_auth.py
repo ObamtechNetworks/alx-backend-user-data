@@ -88,11 +88,14 @@ class BasicAuth(Auth):
         Returns:
             User (class): The User Object
         """
-        if not isinstance(user_email, str) or not isinstance(user_pwd, str):
+        if not user_email or type(user_email) != str:
+            return None
+        if not user_pwd or type(user_pwd) != str:
             return None
 
         # check database file
         if DATA is not None:
+            # Pass a dictionary to search with the email attribute
             user_list = User.search({"email": user_email})
             if user_list:
                 # Assuming emails are unique, get the first match
