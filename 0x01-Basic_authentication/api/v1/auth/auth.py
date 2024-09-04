@@ -30,7 +30,7 @@ class Auth:
         for excluded_path in excluded_paths:
             # Normalize the excluded path
             normalized_excluded_path = excluded_path.rstrip('/')
-            
+
             # Check if the path matches the excluded path pattern
             if fnmatch.fnmatch(normalized_path, normalized_excluded_path):
                 return False
