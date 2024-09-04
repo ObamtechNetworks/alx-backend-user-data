@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Auth Class to Manage Basic Authentication"""
 
+import fnmatch
 from flask import request
 from typing import List, TypeVar
 
@@ -26,9 +27,12 @@ class Auth:
         # Normalize the path
         normalized_path = path.rstrip('/')
 
-        # Check if the normalized path is in the excluded paths
         for excluded_path in excluded_paths:
-            if excluded_path.rstrip('/') == normalized_path:
+            # Normalize the excluded path
+            normalized_excluded_path = excluded_path.rstrip('/')
+            
+            # Check if the path matches the excluded path pattern
+            if fnmatch.fnmatch(normalized_path, normalized_excluded_path):
                 return False
 
         return True
