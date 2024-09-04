@@ -7,6 +7,7 @@ from api.v1.views import app_views
 from flask import Flask, jsonify, abort, request
 from flask_cors import (CORS, cross_origin)
 from api.v1.auth.auth import Auth
+from api.v1.auth.basic_auth import BasicAuth
 
 
 app = Flask(__name__)
@@ -21,6 +22,8 @@ auth_env = getenv('AUTH_TYPE')
 if auth_env:
     if auth_env == 'Auth'.lower():
         auth = Auth()
+    elif auth_env == 'Basic_auth'.lower():
+        auth = BasicAuth()
 
 
 @app.before_request
