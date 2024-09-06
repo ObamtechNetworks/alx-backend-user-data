@@ -62,3 +62,19 @@ class Auth:
             User: returns the user object
         """
         return None
+
+    def session_cookie(self, request=None) -> str:
+        """returns a cookie value from a request
+
+        Args:
+            request (flask request, optional):
+            flask http request object. Defaults to None.
+
+        Returns:
+            str: cookie value from a request
+        """
+        if request is None:
+            return None
+
+        cookie_data = request.cookies.get('_my_session_id')
+        return cookie_data
