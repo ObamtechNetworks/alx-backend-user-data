@@ -83,5 +83,5 @@ class Auth:
 
         # Use the .get() method to get the cookie value
         cookie_data = request.cookies.get(cookie_name)
-        
+
         return cookie_data
