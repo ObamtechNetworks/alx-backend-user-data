@@ -13,11 +13,11 @@ def session_authentication():
 
     # Retrieve email and password from request
     user_email = request.form.get('email')
-    if not user_email:
+    if not user_email or user_email == '':
         return jsonify({"error": "email missing"}), 400
 
     user_pwd = request.form.get('password')
-    if not user_pwd:
+    if not user_pwd or user_pwd == '':
         return jsonify({"error": "password missing"}), 400
 
     # Search for the user by email
@@ -37,9 +37,9 @@ def session_authentication():
     session_id = auth.create_session(user.id)
 
     # Return user data and set the session cookie
-    response = make_response(user.to_json())
+    response = jsonify(user.to_json())
     # Get the session name from environment variable
-    session_name = os.getenv("SESSION_NAME")
-    response.set_cookie(session_name, session_id)
+    cookie_data = os.getenv("SESSION_NAME")
+    response.set_cookie(cookie_data, session_id)
 
     return response
