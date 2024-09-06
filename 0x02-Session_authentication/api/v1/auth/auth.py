@@ -3,6 +3,7 @@
 
 import fnmatch
 from flask import request
+import os
 from typing import List, TypeVar
 
 
@@ -76,5 +77,11 @@ class Auth:
         if request is None:
             return None
 
-        cookie_data = request.cookies.get('_my_session_id')
+        # Retrieve the cookie name from the environment variable
+        # Fallback to _my_session_id if not set
+        cookie_name = os.getenv('SESSION_NAME', '_my_session_id')
+
+        # Use the .get() method to get the cookie value
+        cookie_data = request.cookies.get(cookie_name)
+        
         return cookie_data
