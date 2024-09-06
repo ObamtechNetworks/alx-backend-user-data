@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Sessikon Authentication"""
 
+from typing import TypeVar
 import uuid
 from api.v1.auth.auth import Auth
+from models.user import User
 
 
 class SessionAuth(Auth):
@@ -39,3 +41,18 @@ class SessionAuth(Auth):
             return None
         user_id = self.user_id_by_session_id.get(session_id)
         return user_id
+
+    def current_user(self, request=None) -> TypeVar('User'):
+        """returns a User instance based on a cookie value
+
+        Args:
+            request (flask http request, optional):
+            flask http request. Defaults to None.
+
+        Return:
+            returns User instance
+        """
+        cookie_value = self.session_cookie(request)
+        user_id = self.user_id_by_session_id.get(cookie_value)
+        user = User.get(user_id)
+        return user
