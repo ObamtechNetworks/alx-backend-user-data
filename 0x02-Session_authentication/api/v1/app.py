@@ -16,10 +16,11 @@ CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 
 auth = None
 # Load auth type from environment variable
-auth_env = getenv('AUTH_TYPE').lower()
+auth_env = getenv('AUTH_TYPE')
 
 # Initialize the auth instance based on the environment variable
 if auth_env:
+    auth_env = auth_env.lower()
     if auth_env == 'auth':
         auth = Auth()
     elif auth_env == 'basic_auth':
