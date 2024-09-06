@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """ Module for session views
 """
-from api.v1.views import app_views
-from flask import abort, jsonify, request, make_response
-from models.user import User
 import os
+from flask import abort, jsonify, request, make_response
+from api.v1.views import app_views
+from models.user import User
+from api.v1.app import auth
 
 
 @app_views.route('/auth_session/login', methods=['POST'], strict_slashes=False)
@@ -43,3 +44,16 @@ def session_authentication():
     response.set_cookie(cookie_data, session_id)
 
     return response
+
+
+@app_views.route('/auth_session/logout', methods=['DELETE'],
+                 strict_slashes=False)
+def logout():
+    """Handles the user logout"""
+    # Attempt to destroy the session using auth.destroy_session
+    if not auth.destroy_session(request):
+        # If destroy_session returns False, abort with a 404 error
+        abort(404)
+
+    # If successful, return an empty JSON dictionary with a 200 status code
+    return jsonify({}), 200
