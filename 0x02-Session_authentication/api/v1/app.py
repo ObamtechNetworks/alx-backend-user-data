@@ -35,8 +35,10 @@ def before_request():
     """Handles request before any other"""
     if auth is None:
         return
-    # List of paths that do not require authentication
-    excluded_paths = ['/api/v1/status/', '/api/v1/unauthorized/',
+
+    # Excluded paths that do not require authentication
+    excluded_paths = ['/api/v1/status/',
+                      '/api/v1/unauthorized/',
                       '/api/v1/forbidden/',
                       '/api/v1/auth_session/login/']
 
@@ -44,20 +46,17 @@ def before_request():
     if not auth.require_auth(request.path, excluded_paths):
         return
 
-    # Check for authorization header
-    if auth.authorization_header(request) is None:
-        abort(401)
-
+    # Check for valid authorization or session
     if auth.authorization_header(request) is None \
             and auth.session_cookie(request) is None:
         abort(401)
 
-    # Check for current user
+    # Check for current user (which will validate the session or token)
     if auth.current_user(request) is None:
         abort(403)
 
-    current_user = auth.current_user(request)
-    request.current_user = current_user
+    # If user is authenticated, set request current user
+    request.current_user = auth.current_user(request)
 
 
 @app.errorhandler(404)
