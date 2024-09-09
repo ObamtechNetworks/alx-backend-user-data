@@ -1,47 +1,51 @@
 #!/usr/bin/env python3
 """ Module for session views
 """
-import os
+from os import getenv
 from flask import abort, jsonify, request, make_response
 from api.v1.views import app_views
 from models.user import User
-from api.v1.app import auth
 
 
-@app_views.route('/auth_session/login', methods=['POST'], strict_slashes=False)
-def session_authentication():
-    """Authenticates a user session."""
+@app_views.route('/auth_session/login',
+                 methods=['POST'], strict_slashes=False)
+def login():
+    """
+    POST /api/v1/auth_session/login:
+    Handles session authentication
+    """
+    email = request.form.get('email')
+    password = request.form.get('password')
 
-    # Retrieve email and password from request
-    user_email = request.form.get('email')
-    if not user_email or user_email == '':
+    # Check if email is provided
+    if email is None or email == "":
         return jsonify({"error": "email missing"}), 400
 
-    user_pwd = request.form.get('password')
-    if not user_pwd or user_pwd == '':
+    # Check if password is provided
+    if password is None or password == "":
         return jsonify({"error": "password missing"}), 400
 
-    # Search for the user by email
-    users = User.search({'email': user_email})
-    if not users or len(users) == 0:
+    # Retrieve the User instance based on email
+    users = User.search({'email': email})
+    if len(users) == 0:
         return jsonify({"error": "no user found for this email"}), 404
 
-    user = users[0]  # Since search returns a list, we take the first user
+    user = users[0]
 
-    # Validate the password
-    if not user.is_valid_password(user_pwd):
+    # Check if password is valid
+    if not user.is_valid_password(password):
         return jsonify({"error": "wrong password"}), 401
 
-    # Create a session for the user
-    # Import only where necessary to avoid circular imports
     from api.v1.app import auth
+    # Create a Session ID for the user and save it
     session_id = auth.create_session(user.id)
 
-    # Return user data and set the session cookie
+    # Generate the response with user's data
     response = jsonify(user.to_json())
-    # Get the session name from environment variable
-    cookie_data = os.getenv("SESSION_NAME")
-    response.set_cookie(cookie_data, session_id)
+
+    # Set the cookie in the response
+    session_name = getenv('SESSION_NAME')
+    response.set_cookie(session_name, session_id)
 
     return response
 
@@ -50,6 +54,7 @@ def session_authentication():
                  strict_slashes=False)
 def logout():
     """Handles the user logout"""
+    from api.v1.app import auth
     # Attempt to destroy the session using auth.destroy_session
     if not auth.destroy_session(request):
         # If destroy_session returns False, abort with a 404 error
