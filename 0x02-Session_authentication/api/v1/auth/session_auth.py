@@ -54,6 +54,18 @@ class SessionAuth(Auth):
         """
         cookie_value = self.session_cookie(request)
         user_id = self.user_id_by_session_id.get(cookie_value)
+        # Handle case where user_id is a dictionary
+        if isinstance(user_id, dict):
+            user_id = user_id.get('user_id')
+            if not isinstance(user_id, str):
+                print(f"Error: Expected user_id to be a string, but got: {user_id}")
+                return None
+        
+        # Ensure user_id is a string
+        if not isinstance(user_id, str):
+            print(f"Error: Expected user_id to be a string, but got: {user_id}")
+            return None
+
         user = User.get(user_id)
         return user
 

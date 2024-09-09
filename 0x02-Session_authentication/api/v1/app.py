@@ -9,6 +9,7 @@ from flask_cors import (CORS, cross_origin)
 from api.v1.auth.auth import Auth
 from api.v1.auth.basic_auth import BasicAuth
 from api.v1.auth.session_auth import SessionAuth
+from api.v1.auth.session_exp_auth import SessionExpAuth
 
 
 app = Flask(__name__)
@@ -28,6 +29,8 @@ if auth_env:
         auth = BasicAuth()
     elif auth_env == 'session_auth':
         auth = SessionAuth()
+    elif auth_env == 'session_exp_auth':
+        auth = SessionExpAuth()
 
 
 @app.before_request
