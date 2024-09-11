@@ -47,16 +47,16 @@ class DB:
         # return the newly created user object
         return new_user
 
-    # # save user to database
-    # def save(self, instance):
-    #     """saves instance to the session
+    # save user to database
+    def save(self, instance):
+        """saves instance to the session
 
-    #     Args:
-    #         instance (obj): instance to save
-    #     """
-    #     self._session.add(instance)
+        Args:
+            instance (obj): instance to save
+        """
+        self._session.add(instance)
 
-    # def commit(self):
-    #     """commit chanes to the database
-    #     """
-    #     self._session.commit()
+    def commit(self):
+        """commit chanes to the database
+        """
+        self._session.commit()
