@@ -3,6 +3,8 @@
 from flask import (jsonify, Flask, request,
                    abort, make_response, redirect, url_for)
 from auth import Auth
+from alx-backend-user-data.0x03-user_authentication_service.main_4 import email
+from alx-backend-user-data.0x01-Basic_authentication.main_5 import user.email
 
 app = Flask(__name__)
 AUTH = Auth()
@@ -66,6 +68,23 @@ def logout():
             # Redirect to the home page or the main page
             return redirect(url_for('index'))
     # If session_id is not provided or user is not found, respond with 403
+    abort(403)
+
+
+@app.route("/reset_password", methods=["POST"], strict_slashes=False)
+def get_reset_password_token():
+    """Gets reset password token for user
+    expects the email field from the user
+    """
+    req_email = request.email
+    if not req_email:
+        return jsonify({"error": "email is required"}), 400
+
+    user = AUTH._db.find_user_by(email=email)
+    if user:
+        token = AUTH.get_reset_password_token(email)
+        return jsonify({"email": user.email,
+                        "reset_token": user.reset_token}), 200
     abort(403)
 
 
