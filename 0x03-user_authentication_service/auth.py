@@ -66,14 +66,14 @@ class Auth:
             # print(f"An error occurred: {str(e)}")
             return False
 
-    @property
-    def _generate_uuid(self) -> str:
-        """returns a string repr of a new UUID
+    
+def _generate_uuid() -> str:
+    """returns a string repr of a new UUID
 
-        Returns:
-            uuid: string reprensentation of a UUID
-        """
-        return str(uuid.uuid4())
+    Returns:
+        uuid: string reprensentation of a UUID
+    """
+    return str(uuid.uuid4())
 
 
 def _hash_password(password: str) -> bytes:
