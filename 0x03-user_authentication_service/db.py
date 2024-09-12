@@ -81,3 +81,25 @@ class DB:
             raise NoResultFound
         except InvalidRequestError:
             raise InvalidRequestError
+
+    def update_user(self, user_id: int, **kwargs) -> None:
+        """Finds a user by id and then updates their data
+        as provided in kwargs
+
+        Args:
+            user_id (int): user_id to find
+            **Kwargs (dict): keyword arguments to update
+        """
+        found_user = self.find_user_by(id=user_id)
+
+        # Loop over the provided kwargs to see if follow model
+        for key, value in kwargs.items():
+            # check if the attribute exists in the user model
+            if not hasattr(found_user, key):
+                raise ValueError
+
+            # Update the attribute with teh new value
+            setattr(found_user, key, value)
+
+        # Commit changes to the db
+        self.commit()
