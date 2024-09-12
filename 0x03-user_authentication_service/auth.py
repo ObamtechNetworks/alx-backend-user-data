@@ -66,6 +66,20 @@ class Auth:
             # print(f"An error occurred: {str(e)}")
             return False
 
+    def create_session(self, email: str) -> str:
+        try:
+            user = self._db.find_user_by(email=email)
+            # if user is found,
+            if user:
+                # generate uuid
+                session_id = _generate_uuid()
+                # update user with id in the database with the session_id prop
+                self._db.update_user(user.id, session_id=session_id)
+                return session_id
+            return None
+        except Exception:
+            return None
+
 
 def _generate_uuid() -> str:
     """returns a string repr of a new UUID
