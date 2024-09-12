@@ -66,7 +66,7 @@ class Auth:
             # print(f"An error occurred: {str(e)}")
             return False
 
-    
+
 def _generate_uuid() -> str:
     """returns a string repr of a new UUID
 
