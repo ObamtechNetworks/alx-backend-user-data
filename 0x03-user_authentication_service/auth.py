@@ -46,6 +46,25 @@ class Auth:
         except InvalidRequestError:
             raise ValueError("email and password is required")
 
+    def valid_login(self, email: str, password: str) -> bool:
+        try:
+            # Find user by email
+            user = self._db.find_user_by(email=email)
+
+            if user:
+                # Hash the provided password using bcrypt
+                hash_pwd = str.encode(password)  # User-supplied password
+                # Compare it with the stored hashed password (already bytes)
+                if bcrypt.checkpw(hash_pwd, user.hashed_password):
+                    return True
+                else:
+                    return False
+            return False
+
+        except Exception as e:
+            # print(f"An error occurred: {str(e)}")
+            return False
+
 
 def _hash_password(password: str) -> bytes:
     """Hashes given password
