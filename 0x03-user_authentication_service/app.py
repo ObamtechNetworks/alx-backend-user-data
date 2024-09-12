@@ -57,11 +57,11 @@ def login():
 def logout():
     """Logs out a user via session"""
     user_session = request.session_id
-    user = AUTH.get_user_from_session_id(user_session)
-
-    if user:
-        AUTH.destroy_session(user.id)
-        redirect(url_for('index'))
+    if user_session:
+        user = AUTH.get_user_from_session_id(user_session)
+        if user:
+            AUTH.destroy_session(user.id)
+            redirect(url_for('index'))
     abort(403)
 
 
