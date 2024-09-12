@@ -103,6 +103,15 @@ class Auth:
         except Exception:
             return None
 
+    def destroy_session(self, user_id: int) -> None:
+        """Destroys a user session
+
+        Args:
+            user_id (int): the id of the user to destroy their session
+        """
+        self._db.update_user(user_id, session_id=None)
+        return None
+
 
 def _generate_uuid() -> str:
     """returns a string repr of a new UUID
