@@ -82,7 +82,7 @@ class Auth:
         except Exception:
             return None
 
-    def get_user_from_session_id(self, session_id: str) -> Union[User | None]:
+    def get_user_from_session_id(self, session_id: str) -> Union[User, None]:
         """Finds a user by sessionID
 
         Args:
@@ -95,10 +95,11 @@ class Auth:
             return None
         try:
             user = self._db.find_user_by(session_id=session_id)
-            if user:
-                return user
-            else:
-                return None
+            return user
+        except NoResultFound:
+            return None
+        except InvalidRequestError:
+            return None
         except Exception:
             return None
 
