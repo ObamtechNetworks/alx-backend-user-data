@@ -158,7 +158,6 @@ class Auth:
             # Update user's password and reset the reset_token to None
             self._db.update_user(user.id, hashed_password=hash_pwd,
                                  reset_token=None)
-            return None
 
 
 def _generate_uuid() -> str:
