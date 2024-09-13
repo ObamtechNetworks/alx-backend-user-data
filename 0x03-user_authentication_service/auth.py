@@ -149,10 +149,11 @@ class Auth:
         """
         try:
             user = self.get_user_by(reset_token=reset_token)
-            hash_pwd = _hash_password(password)
-            self._db.update_user(user.id, hashed_password=hash_pwd,
-                                 reset_token=None)
-        except NoResultFound:
+            if user:
+                hash_pwd = _hash_password(password)
+                self._db.update_user(user.id, hashed_password=hash_pwd,
+                                     reset_token=None)
+        except (NoResultFound, InvalidRequestError):
             raise ValueError("User not found")
 
 
