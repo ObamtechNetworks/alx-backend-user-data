@@ -110,5 +110,40 @@ def profile():
     abort(403)
 
 
+@app.route("/reset_password", methods=['PUT'], strict_slashes=False)
+def update_password():
+    """handles the reset_password endpoint
+    """
+    email = request.form.get('email')
+    if not email:
+        # If email is not provided in the form data
+        return jsonify({"error": "email is required"}), 400
+
+    reset_token = request.form.get('reset_token')
+    if not reset_token:
+        return jsonify({"error": "reset_token is required"}), 400
+    new_password = request.form.get('new_password')
+    if not new_password:
+        return jsonify({"error": "new_password is required"}), 400
+
+    # Check if the reset token is valid and update the password
+    try:
+        # First, check if the user exists with the given email
+        user = AUTH.get_user_by(email=email)
+        if user is None:
+            return jsonify({"error": "Invalid email"}), 400
+
+        # Attempt to update the password using the reset token
+        AUTH.update_password(reset_token, new_password)
+
+        # If successful, return a 200 status with a success message
+        return jsonify({"email": email, "message": "Password updated"}), 200
+
+    except ValueError:
+        # If the token is invalid or the password update fails,
+        # return a 403 error
+        return jsonify({"error": "Invalid reset token"}), 403
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port="5000")
