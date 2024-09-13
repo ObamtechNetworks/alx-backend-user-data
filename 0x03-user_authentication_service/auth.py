@@ -158,9 +158,9 @@ class Auth:
                                      reset_token=None)
                 return None
             else:
-                raise ValueError("Invalid reset token or user not found")
+                raise ValueError
         except Exception as e:
-            raise ValueError("Error updating password: {}".format(str(e)))
+            raise ValueError
 
 
 def _generate_uuid() -> str:
