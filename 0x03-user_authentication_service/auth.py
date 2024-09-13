@@ -134,11 +134,26 @@ class Auth:
     def get_user_by(self, **kwargs) -> None:
         """gets a user by given kwargs"""
         try:
-            user =  self._db.find_user_by(**kwargs)
+            user = self._db.find_user_by(**kwargs)
             return user
         except (NoResultFound, InvalidRequestError):
             # Return None if no user is found or an invalid request is made
             return None
+
+    def update_password(self, reset_token: str, password: str) -> None:
+        """uses the reset_token to get a corresponding user
+
+        Args:
+            reset_token (str): token to use to get user to update password
+            password (str): user password to update
+        """
+        try:
+            user = self.get_user_by(reset_token=reset_token)
+            hash_pwd = _hash_password(password)
+            self._db.update_user(user.id, hashed_password=hash_pwd,
+                                 reset_token=None)
+        except NoResultFound:
+            raise ValueError("User not found")
 
 
 def _generate_uuid() -> str:
