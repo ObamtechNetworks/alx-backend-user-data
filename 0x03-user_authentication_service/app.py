@@ -76,16 +76,28 @@ def get_reset_password_token():
     """Gets reset password token for user
     expects the email field from the user
     """
-    req_email = request.email
+    # Extract email from form data
+    req_email = request.form.get('email')
+
     if not req_email:
+        # If email is not provided in the form data
         return jsonify({"error": "email is required"}), 400
 
-    user = AUTH._db.find_user_by(email=email)
-    if user:
-        token = AUTH.get_reset_password_token(email)
-        return jsonify({"email": user.email,
-                        "reset_token": token}), 200
-    abort(403)
+    try:
+        # Find the user by email using public methods of AUTH
+        user = AUTH.get_user_by(req_email)
+
+        if not user:
+            # If no user is found with the provided email, respond with 403
+            return abort(403)
+
+        # Generate the reset password token
+        token = AUTH.get_reset_password_token(req_email)
+        # Return the response with the reset token and user's email
+        return jsonify({"email": req_email, "reset_token": token}), 200
+    except Exception as e:
+        # Log the exception (optional) and respond with an error
+        return jsonify({"error": "Something went wrong"}), 500
 
 
 @app.route("/profile", methods=['GET'], strict_slashes=False)

@@ -112,17 +112,17 @@ class Auth:
         self._db.update_user(user_id, session_id=None)
         return None
 
-    def get_reset_password_token(self, emaail: str) -> str:
+    def get_reset_password_token(self, email: str) -> str:
         """Generates a  reset password token
 
         Args:
-            emaail (str): email of user address to generate token for
+            email (str): email of user address to generate token for
 
         Returns:
             str: the reset token str
         """
         try:
-            user = self._db.find_user_by(email=emaail)
+            user = self._db.find_user_by(email=email)
             if user:
                 reset_token = str(uuid.uuid4())
                 self._db.update_user(user.id, reset_token=reset_token)
@@ -130,6 +130,10 @@ class Auth:
             raise ValueError({"error": "User does not exists"})
         except Exception:
             raise ValueError({"error": "User does not exists"})
+
+    def get_user_by(self, **kwargs):
+        """gets a user by given kwargs"""
+        return self._db.find_user_by(kwargs)
 
 
 def _generate_uuid() -> str:
