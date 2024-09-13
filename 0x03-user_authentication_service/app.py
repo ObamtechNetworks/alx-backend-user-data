@@ -3,8 +3,7 @@
 from flask import (jsonify, Flask, request,
                    abort, make_response, redirect, url_for)
 from auth import Auth
-from alx-backend-user-data.0x03-user_authentication_service.main_4 import email
-from alx-backend-user-data.0x01-Basic_authentication.main_5 import user.email
+
 
 app = Flask(__name__)
 AUTH = Auth()
@@ -85,7 +84,7 @@ def get_reset_password_token():
 
     try:
         # Find the user by email using public methods of AUTH
-        user = AUTH.get_user_by(req_email)
+        user = AUTH.get_user_by(email=req_email)
 
         if not user:
             # If no user is found with the provided email, respond with 403
