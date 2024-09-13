@@ -131,9 +131,14 @@ class Auth:
         except Exception:
             raise ValueError({"error": "User does not exists"})
 
-    def get_user_by(self, **kwargs):
+    def get_user_by(self, **kwargs) -> None:
         """gets a user by given kwargs"""
-        return self._db.find_user_by(kwargs)
+        try:
+            user =  self._db.find_user_by(**kwargs)
+            return user
+        except (NoResultFound, InvalidRequestError):
+            # Return None if no user is found or an invalid request is made
+            return None
 
 
 def _generate_uuid() -> str:
