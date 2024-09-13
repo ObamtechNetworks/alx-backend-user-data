@@ -50,7 +50,15 @@ class Auth:
             raise ValueError("email and password is required")
 
     def valid_login(self, email: str, password: str) -> bool:
-        """Validates user login"""
+        """Validates user login
+
+        Args:
+            email (str): user email
+            password (str): user password
+
+        Returns:
+            bool: returns True or False based on cred validation
+        """
         try:
             # Find user by email
             user = self._db.find_user_by(email=email)
