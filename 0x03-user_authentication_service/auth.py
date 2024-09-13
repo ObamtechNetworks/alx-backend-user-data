@@ -131,7 +131,7 @@ class Auth:
         except Exception:
             raise ValueError({"error": "User does not exists"})
 
-    def get_user_by(self, **kwargs) -> None:
+    def get_user_by(self, **kwargs) -> Union[User, None]:
         """gets a user by given kwargs"""
         try:
             user = self._db.find_user_by(**kwargs)
@@ -147,20 +147,20 @@ class Auth:
             reset_token (str): token to use to get user to update password
             password (str): user password to update
         """
-    try:
-        # Find the user by the reset token
-        user = self.get_user_by(reset_token=reset_token)
-        if user:
-            # Hash the new password
-            hash_pwd = _hash_password(password)
-            # Update user's password and reset the reset_token to None
-            self._db.update_user(user.id, hashed_password=hash_pwd,
-                                 reset_token=None)
-            return None
-        else:
-            raise ValueError("Invalid reset token or user not found")
-    except Exception as e:
-        raise ValueError("Error updating password: {}".format(str(e)))
+        try:
+            # Find the user by the reset token
+            user = self.get_user_by(reset_token=reset_token)
+            if user:
+                # Hash the new password
+                hash_pwd = _hash_password(password)
+                # Update user's password and reset the reset_token to None
+                self._db.update_user(user.id, hashed_password=hash_pwd,
+                                     reset_token=None)
+                return None
+            else:
+                raise ValueError("Invalid reset token or user not found")
+        except Exception as e:
+            raise ValueError("Error updating password: {}".format(str(e)))
 
 
 def _generate_uuid() -> str:
