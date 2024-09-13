@@ -96,8 +96,7 @@ def get_reset_password_token():
         # Return the response with the reset token and user's email
         return jsonify({"email": req_email, "reset_token": token}), 200
     except Exception as e:
-        # Log the exception (optional) and respond with an error
-        return jsonify({"error": "Something went wrong"}), 500
+        return abort(403)
 
 
 @app.route("/profile", methods=['GET'], strict_slashes=False)
