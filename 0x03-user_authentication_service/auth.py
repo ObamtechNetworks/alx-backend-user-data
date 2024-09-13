@@ -149,21 +149,23 @@ class Auth:
         """
         try:
             # Find the user by the reset token
-            user = self.get_user_by(reset_token=reset_token)
+            user = self._db.find_user_by(reset_token=reset_token)
             if not user:
-                raise ValueError("Invalid reset token")
+                raise ValueError()
         except NoResultFound:
-            raise ValueError("User not found with the provided reset token")
+            raise ValueError()
         except InvalidRequestError:
-            raise ValueError("Invalid request to database")
+            raise ValueError()
         except Exception as e:
-            raise ValueError(f"An unexpected error occurred: {str(e)}")
+            raise ValueError()
 
-        hash_pwd = _hash_password(password).decode('uft-8')
+        hash_pwd = _hash_password(password)
+        hash_pwd = hash_pwd.decode("utf-8")
         # Update user's password and reset the reset_token to None
         self._db.update_user(user.id,
                              hashed_password=hash_pwd,
                              reset_token=None)
+        return None
 
 
 def _generate_uuid() -> str:
